@@ -5,9 +5,12 @@ Dictionary<string, Shape> moves = new Dictionary<string, Shape>()
     {"A", Shape.Rock},
     {"B", Shape.Paper},
     {"C", Shape.Scissors},
-    {"X", Shape.Rock},
-    {"Y", Shape.Paper},
-    {"Z", Shape.Scissors},
+};
+Dictionary<Shape, Shape> losingShapes = new Dictionary<Shape, Shape>()
+{
+    {Shape.Rock, Shape.Paper},
+    {Shape.Paper, Shape.Scissors},
+    {Shape.Scissors, Shape.Rock},
 };
 string[] input = File.ReadAllLines("input.txt");
 int myScore = 0;
@@ -15,20 +18,32 @@ for (int i = 0; i < input.Length; i++)
 {
     string line = input[i];
     string[] currentPlay = line.Split(" ");
-    myScore += GetScore(currentPlay[0], currentPlay[1]);
+    Shape myShape = new Shape();
+    var enemyShape = moves[currentPlay[0]];
+    var winningShape = losingShapes[enemyShape];
+    switch (currentPlay[1])
+    {
+        case "X":
+            myShape = losingShapes[winningShape];
+            break;
+        case "Y":
+            myShape = enemyShape;
+            break;
+        case "Z":
+            myShape = winningShape;
+            break;
+    }
+    myScore += GetScore(enemyShape, myShape);
 }
 Console.WriteLine(myScore);
-int GetScore(string enemyMove, string myMove)
+int GetScore(Shape enemyShape, Shape myShape)
 {
-    var myShape = moves[myMove];
-    var enemyShape = moves[enemyMove];
-    
-    if (myShape == enemyShape)
-        return 3 + myShape.BaseScore;
+    if (myShape.Name == enemyShape.Name)
+        return 3 + myShape.Score;
     else
     {
-        if (myShape.Weakness == enemyShape.Name)
-            return 0 + myShape.BaseScore;
-        else return 6 + myShape.BaseScore;
+        if (losingShapes[myShape] == enemyShape)
+            return 0 + myShape.Score;
+        else return 6 + myShape.Score;
     }
 }
