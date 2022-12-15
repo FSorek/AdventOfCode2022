@@ -1,5 +1,6 @@
 ﻿string[] input = File.ReadAllLines("input.txt");
 int containSum = 0;
+int overlapSum = 0;
 for (int i = 0; i < input.Length; i++)
 {
     string line = input[i];
@@ -9,8 +10,12 @@ for (int i = 0; i < input.Length; i++)
     if (firstSectionRange[0] <= secondSectionRange[0] && firstSectionRange[1] >= secondSectionRange[1]
         || secondSectionRange[0] <= firstSectionRange[0] && secondSectionRange[1] >= firstSectionRange[1])
         containSum++;
+    if (secondSectionRange[0] <= firstSectionRange[1] && secondSectionRange[0] >= firstSectionRange[0]
+        || firstSectionRange[0] <= secondSectionRange[1] && firstSectionRange[0] >= secondSectionRange[0])
+        overlapSum++;
 }
 Console.WriteLine(containSum);
+Console.WriteLine(overlapSum);
 int[] GetSectionRange(string pairedSection)
 {
     string[] numbers = pairedSection.Split('-');
